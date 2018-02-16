@@ -1,0 +1,14 @@
+{
+  "extends": "airbnb",
+  "env": {
+    "jest": true,
+    "node": true
+  },
+  "rules": {
+    "max-len": "off",
+    "function-paren-newline": "off",
+    "react/prop-types": "off",
+    "react/jsx-filename-extension": "off",
+    "no-use-before-define": "off"
+  }
+}

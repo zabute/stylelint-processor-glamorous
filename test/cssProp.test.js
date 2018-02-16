@@ -34,23 +34,23 @@ describe('CssProp', () => {
     expect(warnings.length).toEqual(2);
   });
 
-  it('should have a prop override warning on line 13 column 9', () => {
+  it('should have a prop override warning on line 18 column 9', () => {
     const propOverrideWarnings = warnings.filter(
       warning =>
         warning.rule === 'declaration-block-no-shorthand-property-overrides',
     );
     expect(propOverrideWarnings).toHaveLength(1);
-    expect(propOverrideWarnings[0].line).toEqual(13);
+    expect(propOverrideWarnings[0].line).toEqual(18);
     expect(propOverrideWarnings[0].column).toEqual(9);
   });
 
-  it('should have a prop warning on line 15 column 11', () => {
+  it('should have a prop warning on line 20 column 11', () => {
     const propWarnings = warnings.filter(
       warning => warning.rule === 'property-no-unknown',
     );
 
     expect(propWarnings).toHaveLength(1);
-    expect(propWarnings[0].line).toEqual(15);
+    expect(propWarnings[0].line).toEqual(20);
     expect(propWarnings[0].column).toEqual(11);
   });
 });

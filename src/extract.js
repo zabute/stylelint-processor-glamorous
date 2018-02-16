@@ -113,7 +113,7 @@ const processRule = (path) => {
           prop.get('value').replaceWith(t.stringLiteral('placeholderValue'));
         }
       } else {
-        prop.get('leadingComments').map(comment => comment.remove());
+        prop.node.leadingComments = []; // eslint-disable-line
         prop.remove();
       }
     });

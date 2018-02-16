@@ -1,6 +1,6 @@
 {
   "name": "stylelint-processor-glamorous",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Lint glamorous and related css-in-js with stylelint",
   "repository": {
     "type": "git",

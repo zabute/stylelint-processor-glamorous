@@ -1,6 +1,8 @@
 export default [
   'indentation',
   'no-empty-source',
+  'block-no-empty',
+  'selector-list-comma-newline-after',
   'declaration-block-trailing-semicolon',
   'no-missing-end-of-source-newline',
   'rule-empty-line-before',

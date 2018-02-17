@@ -12,9 +12,10 @@ import {
   extractDeclarations,
 } from './helpers';
 
-const sourceMap = new Map();
+let sourceMap;
 
 export default (ast) => {
+  sourceMap = new Map();
   let glamorousImport;
   let rules = [];
 
@@ -25,11 +26,11 @@ export default (ast) => {
       }
 
       if (path.isImportDeclaration()) {
-        glamorousImport =
-          path.node.source.value === 'glamorous' &&
-          path
+        if (path.node.source.value === 'glamorous') {
+          glamorousImport = path
             .get('specifiers')
             .filter(specifier => specifier.isImportDefaultSpecifier())[0];
+        }
       }
 
       if (path.isCallExpression() && glamorousImport) {
@@ -40,17 +41,22 @@ export default (ast) => {
           (object && object.name === importName) ||
           (callee && callee.name === importName)
         ) {
+          // console.log(path.get('arguments')[1].type);
           path.get('arguments').forEach((arg) => {
             if (arg.isObjectExpression()) {
               rules = rules.concat([arg]);
-            } else {
-              const rule = Object.assign(
-                {},
-                t.objectExpression(extractDeclarations(arg)),
-                { loc: path.node.loc },
-              );
-              path.replaceWith(rule);
-              rules = rules.concat([path]);
+            } else if (arg.isFunction()) {
+              if (arg.get('body').isObjectExpression()) {
+                rules = rules.concat(arg.get('body'));
+              } else {
+                const rule = Object.assign(
+                  {},
+                  t.objectExpression(extractDeclarations(arg.get('body'))),
+                  { loc: path.node.loc },
+                );
+                path.replaceWith(rule);
+                rules = rules.concat(path);
+              }
             }
           });
         }
@@ -61,16 +67,13 @@ export default (ast) => {
   let styles = [];
 
   rules.forEach((rule) => {
-    const selector = `.${id.generate()} `;
-    sourceMap.set(
-      sourceMap.size + 1,
-      Object.assign(rule.node.loc.start, {
-        column: rule.node.loc.start.column - (selector.length + 1),
-      }),
-    );
+    sourceMap.set(sourceMap.size + 1, rule.node.loc.start);
     processRule(rule);
+
     const cssString = getCssString(rule.node);
-    styles = styles.concat([`.${selector}{${cssString && '\n'}${cssString}}`]);
+    styles = styles.concat([
+      `.${id.generate()}{${cssString && '\n'}${cssString}}`,
+    ]);
   });
 
   return { css: styles.join('\n'), sourceMap };
@@ -104,11 +107,18 @@ const processRule = (path) => {
                 prop.node.key.value.replace(/([A-Z])/, '-$1').toLowerCase(),
               ),
             );
+
+          if (!prop.get('value').isObjectExpression()) {
+            prop.get('value').replaceWith(t.objectExpression([]));
+          }
         }
 
         if (prop.get('value').isObjectExpression()) {
           processRule(prop.get('value'));
-        } else if (!prop.get('value').isLiteral()) {
+        } else if (
+          !prop.get('value').isNumericLiteral() &&
+          !prop.get('value').isStringLiteral()
+        ) {
           // TODO: find a more elegant way to handle expression values.
           prop.get('value').replaceWith(t.stringLiteral('placeholderValue'));
         }

@@ -1,5 +1,5 @@
 # stylelint-processor-glamorous
-> Lint [glamorous]() and related css-in-js with stylelint
+> Lint [glamorous](https://github.com/paypal/glamorous) and related css-in-js with [stylelint](https://github.com/stylelint/stylelint)
 
 [![Build Status](https://travis-ci.org/zabute/stylelint-processor-glamorous.svg?branch=master)](https://travis-ci.org/zabute/stylelint-processor-glamorous)
 
@@ -38,7 +38,7 @@ $ yarn stylelint 'src/**/*.js'
 - CSS attributes
 
   ```jsx
-    <Div css={{ ... }}>
+    <Div css={{ ... }}/>
   ```  
 
 - Annotated object literals.

@@ -30,8 +30,8 @@ describe('CssProp', () => {
     expect(warnings.length).toBeGreaterThan(0);
   });
 
-  it('should have 2 warnings', () => {
-    expect(warnings.length).toEqual(2);
+  it('should have 3 warnings', () => {
+    expect(warnings.length).toEqual(3);
   });
 
   it('should have a prop override warning on line 18 column 9', () => {
@@ -52,5 +52,14 @@ describe('CssProp', () => {
     expect(propWarnings).toHaveLength(1);
     expect(propWarnings[0].line).toEqual(20);
     expect(propWarnings[0].column).toEqual(11);
+  });
+
+  it('should have a hex warning on line 22', () => {
+    const hexWarnings = warnings.filter(
+      warning => warning.rule === 'color-no-invalid-hex',
+    );
+
+    expect(hexWarnings).toHaveLength(1);
+    expect(hexWarnings[0].line).toEqual(22);
   });
 });

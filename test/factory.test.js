@@ -30,8 +30,8 @@ describe('Factory', () => {
     expect(warnings.length).toBeGreaterThan(0);
   });
 
-  it('should have 3 warnings', () => {
-    expect(warnings.length).toEqual(3);
+  it('should have 4 warnings', () => {
+    expect(warnings.length).toEqual(4);
   });
 
   it('should have a selector warning on line 15 column 5', () => {
@@ -52,6 +52,15 @@ describe('Factory', () => {
     expect(propWarnings).toHaveLength(1);
     expect(propWarnings[0].line).toEqual(20);
     expect(propWarnings[0].column).toEqual(5);
+  });
+
+  it('should have a hex case warning on line 21', () => {
+    const hexCaseWarnings = warnings.filter(
+      warning => warning.rule === 'color-hex-case',
+    );
+
+    expect(hexCaseWarnings).toHaveLength(1);
+    expect(hexCaseWarnings[0].line).toEqual(21);
   });
 
   it('should have a font family warning on line 30 column 23', () => {

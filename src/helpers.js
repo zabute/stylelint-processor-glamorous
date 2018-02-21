@@ -29,3 +29,16 @@ export const extractDeclarations = (path) => {
 
   return declarations;
 };
+
+export const extractValues = (path) => {
+  let values = [];
+  path.traverse({
+    Literal(p) {
+      if (p.node.value) {
+        values = values.concat([p.node]);
+      }
+    },
+  });
+
+  return values;
+};

@@ -10,6 +10,7 @@ import {
   isCssAttribute,
   isAnnotatedExpression,
   extractDeclarations,
+  extractValues,
 } from './helpers';
 
 let sourceMap;
@@ -41,7 +42,6 @@ export default (ast) => {
           (object && object.name === importName) ||
           (callee && callee.name === importName)
         ) {
-          // console.log(path.get('arguments')[1].type);
           path.get('arguments').forEach((arg) => {
             if (arg.isObjectExpression()) {
               rules = rules.concat([arg]);
@@ -119,8 +119,33 @@ const processRule = (path) => {
           !prop.get('value').isNumericLiteral() &&
           !prop.get('value').isStringLiteral()
         ) {
-          // TODO: find a more elegant way to handle expression values.
-          prop.get('value').replaceWith(t.stringLiteral('placeholderValue'));
+          const values = extractValues(prop.get('value'));
+
+          if (
+            prop.get('value').isConditionalExpression() &&
+            values.length > 0
+          ) {
+            // Create multiple declarations for conditional expressions.
+            // Example: { color: prop.primary ? 'red' : 'blue' }
+            //  will be replaced with { color: 'red', color: 'blue'}
+            const declarations = values.map((value, index) => {
+              const key = Object.assign(
+                {},
+                // Attach a random id to the prop so it becomes valid js.
+                t.stringLiteral(`${prop.node.key.name}$${id.generate()}`),
+                { loc: prop.node.loc },
+              );
+
+              if (index > 0) {
+                sourceMap.set(sourceMap.size + 1, prop.node.key.loc.start);
+              }
+              return t.objectProperty(key, value);
+            });
+
+            prop.replaceWithMultiple(declarations);
+          } else {
+            prop.get('value').replaceWith(t.stringLiteral('placeholderValue'));
+          }
         }
       } else {
         prop.node.leadingComments = []; // eslint-disable-line
@@ -140,7 +165,12 @@ const getCssString = (node) => {
       extractedCss &&
       // Collapse closing braces to the end of the last declaration in the block. Makes
       // generating the source map a lot easier: simply map every object property to a line in the css.
-      extractedCss.replace(/\n\s*(?=\s*})/g, '').replace(/\n\s*/g, '\n')
+      extractedCss
+        .replace(/\n\s*(?=\s*})/g, '')
+        // Remove Indentations
+        .replace(/\n\s*/g, '\n')
+        // Remove random id if present
+        .replace(/(\$.*)(?=.*:)/g, '')
     );
   } catch (e) {
     e.message = `Parsing Failed. Make sure you're not using unsupported syntax. ${

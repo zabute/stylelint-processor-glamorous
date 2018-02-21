@@ -57,9 +57,6 @@
     "stylelint": "^8.4.0",
     "stylelint-config-standard": "^18.0.0"
   },
-  "peerDependencies": {
-    "stylelint": "^8.4.0"
-  },
   "scripts": {
     "test": "yarn build && jest test/*.test.js",
     "lint": "eslint .",

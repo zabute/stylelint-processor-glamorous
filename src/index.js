@@ -27,10 +27,17 @@ const sourceMaps = {};
 
 export default () => ({
   code: (input, path) => {
-    const { css, sourceMap } = extract(parse(input));
-    sourceMaps[path] = sourceMap;
+    try {
+      const { css, sourceMap } = extract(parse(input));
+      sourceMaps[path] = sourceMap;
 
-    return css;
+      return css;
+    } catch (e) {
+      if (e.name === 'SyntaxError') {
+        return '';
+      }
+      throw e;
+    }
   },
 
   result: (result, path) =>

@@ -34,13 +34,19 @@ export default (ast) => {
         }
       }
 
-      if (path.isCallExpression() && glamorousImport) {
-        const importName = glamorousImport.node.local.name;
+      if (path.isCallExpression()) {
+        let importName;
+
+        if (glamorousImport) {
+          importName = glamorousImport.node.local.name;
+        }
+
         const { object, callee } = path.node.callee;
 
         if (
-          (object && object.name === importName) ||
-          (callee && callee.name === importName)
+          (object &&
+            (object.name === importName || object.name === 'styled')) ||
+          (callee && (callee.name === importName || callee.name === 'styled'))
         ) {
           path.get('arguments').forEach((arg) => {
             if (arg.isObjectExpression()) {

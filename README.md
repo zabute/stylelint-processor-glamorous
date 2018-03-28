@@ -6,14 +6,13 @@
 ## Installation
 
 ```sh
-$ yarn add stylelint stylelint-processor-glamorous stylelint-config-standard --dev
+$ yarn add stylelint stylelint-config-standard stylelint-processor-glamorous --dev
 ```
 
- > You don't have to use the standard config. You can use ```styleilint-config-recommended``` or use your own cusotm config.
-Certain rules that enforce formatting are [ignored](/src/ignoredRules.js).
+ > You can use `styleiint-config-recomended` or your own custom config. Certain rules that enforce formatting rules will be [ignored](/src/ignoredRules.js).
 
 
-Add ```.stylelintrc``` to the root of your project.
+### Add ```.stylelintrc``` to the root of your project:
 ```json
 {
   "processors": ["stylelint-processor-glamorous"],
@@ -32,7 +31,10 @@ $ yarn stylelint 'src/**/*.js'
 ## What gets linted
 - Glamorous component factories
   ```js
+    import glamorous from 'glamorous'; // choose any name for the defaut export
+
     const Component = glamorous.div({ ... });
+    const OtherComponent = glamorous('div')({ ... })
   ```
 
 - CSS attributes
@@ -50,8 +52,25 @@ $ yarn stylelint 'src/**/*.js'
     }
   ```
   
-  The  ```@css```  comment tells the processor that its a style object. Make sure you put it right before the opening brace.  
+  The  `@css`  comment tells the processor that its a style object. Make sure you put it right before the opening brace.
 
 <hr/>
 
-  LICENSE: [MIT](/LICENSE)
+## Integrating with other css-in-js libraries
+  You can use `@css` to lint any object. Hoverver, if you stick to the `styled` pattern, you won't need to add annotations to your code.
+
+  ```js
+    import styled from 'my-fav-cssinjs-lib';
+
+    const Component = styled.div({ ... })
+    const OtherComponent = styled('div')({ ... })  
+  ```
+
+<hr/>  
+
+## Contributing
+Contributions of any kind are always welcome.
+
+<hr/>
+
+LICENSE: [MIT](/LICENSE)

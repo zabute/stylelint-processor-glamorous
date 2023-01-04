@@ -26,7 +26,7 @@
     "@babel/traverse": "^7.0.0-beta.40",
     "@babel/types": "^7.0.0-beta.40",
     "babylon": "^6.18.0",
-    "json5": "^0.5.1",
+    "json5": "^1.0.2",
     "postcss": "^6.0.18",
     "postcss-js": "^1.0.1",
     "shortid": "^2.2.8"
